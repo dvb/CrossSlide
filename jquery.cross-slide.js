@@ -19,6 +19,8 @@
  */
 /* Changelog:
  *
+ * 0.6.3  2012-06-04  Added fill option
+ * 0.6.2  2011-11-15  Made compatible with jQuery 1.3.2
  * 0.6.2  2010-09-29  Added support for rel attribute
  * 0.6.1  2010-08-02  Bugfixes
  * 0.6    2010-07-03  Variant Ken Burns effect
@@ -188,6 +190,13 @@
 				var p = plan[i];
 				if (! p.src)
 					abort('missing src parameter in picture {0}.', i + 1);
+				var zoom_factor = 1;
+				if (!! opts.fill) {
+					if ((self_width/self_height) > (p.width/p.height))
+						zoom_factor = self_width/p.width;
+					else
+						zoom_factor = self_height/p.height;
+				}
 
 				if (speed) { // speed/dir mode
 
@@ -246,8 +255,8 @@
 				// precalculate left/top/width/height bounding values
 				if (p.from)
 					$.each([ p.from, p.to ], function(i, each) {
-						each.width = Math.round(p.width * each.zoom);
-						each.height = Math.round(p.height * each.zoom);
+						each.width = Math.round(p.width * each.zoom * zoom_factor);
+						each.height = Math.round(p.height * each.zoom * zoom_factor);
 						each.left = Math.round((self_width - each.width) * each.xrel);
 						each.top = Math.round((self_height - each.height) * each.yrel);
 					});
